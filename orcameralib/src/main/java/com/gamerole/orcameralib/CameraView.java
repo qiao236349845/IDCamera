@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Build;
@@ -137,7 +138,17 @@ public class CameraView extends FrameLayout {
                 break;
         }
 
-        hintView.setImageResource(hintResourceId);
+        Bitmap bmpOriginal = BitmapFactory.decodeResource(getResources(), hintResourceId);
+        Bitmap bmpResult = Bitmap.createBitmap(bmpOriginal.getHeight() * 2, bmpOriginal.getWidth() * 2, Bitmap.Config.ARGB_8888);
+        Canvas tempCanvas = new Canvas(bmpResult);
+        int pivot = bmpOriginal.getHeight() / 2;
+        tempCanvas.rotate(90, pivot, pivot);
+        tempCanvas.drawBitmap(bmpOriginal, 0, 0, null);
+
+//        hintView.setScaleType(ImageView.ScaleType.CENTER);
+//        hintView.setImageResource(hintResourceId);
+        hintView.setImageBitmap(bmpResult);
+
     }
 
     private void init() {
@@ -153,6 +164,8 @@ public class CameraView extends FrameLayout {
         addView(maskView);
 
         hintView = new ImageView(getContext());
+        LayoutParams params = new LayoutParams(10,100);
+        hintView.setLayoutParams(params);
         addView(hintView);
     }
 
@@ -161,13 +174,17 @@ public class CameraView extends FrameLayout {
         displayView.layout(left, 0, right, bottom - top);
         maskView.layout(left, 0, right, bottom - top);
 
-        int hintViewWidth = DimensionUtil.dpToPx(150);
-        int hintViewHeight = DimensionUtil.dpToPx(25);
+        int hintViewWidth = DimensionUtil.dpToPx(200);
+        int hintViewHeight = DimensionUtil.dpToPx(35);
+
+        int hinHeight = DimensionUtil.dpToPx(30);
 
         int hintViewLeft = (getWidth() - hintViewWidth) / 2;
         int hintViewTop = maskView.getFrameRect().bottom + DimensionUtil.dpToPx(16);
 
-        hintView.layout(hintViewLeft, hintViewTop, hintViewLeft + hintViewWidth, hintViewTop + hintViewHeight);
+        hintView.layout(-hinHeight, hintViewWidth, hintViewLeft + hintViewHeight, hintViewTop + hinHeight);
+
+//        hintView.layout(100, 100, 200, hintViewHeight);
     }
 
     /**

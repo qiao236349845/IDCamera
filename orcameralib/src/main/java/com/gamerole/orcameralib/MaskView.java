@@ -17,6 +17,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 
@@ -115,11 +116,14 @@ public class MaskView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         if (w > 0 && h > 0) {
-            float ratio = h > w ? 0.9f : 0.72f;
+//
 
-            int width = (int) (w * ratio);
-            int height = width * 400 / 620;
-
+//            float ratio = h > w ?  0.9f:0.72f ;
+//            int width = (int) (w * ratio);
+//            int height = width * 400 / 620;
+            float ratio = h > w ? 0.72f : 0.9f;
+            int height = (int) ( h* ratio);
+            int width = height * 400 /620;
             int left = (w - width) / 2;
             int top = (h - height) / 2;
             int right = width + left;
@@ -152,19 +156,53 @@ public class MaskView extends View {
         canvas.drawPath(path, eraser);
 
         if (maskType == MASK_TYPE_ID_CARD_FRONT) {
-            locatorDrawable.setBounds(
-                    (int) (left + 601f / 1006 * width),
-                    (int) (top + (110f / 632) * height),
-                    (int) (left + (963f / 1006) * width),
-                    (int) (top + (476f / 632) * height));
+//            locatorDrawable.setBounds(
+//                    (int) (left + 601f / 1006 * width),
+//                    (int) (top + (110f / 632) * height),
+//                    (int) (left + (963f / 1006) * width),
+//                    (int) (top + (476f / 632) * height));
+//                    (int) (left + 51f / 1006 * width),
+//                    (int) (top + (48f / 632) * height),
+//                    (int) (left + (250f / 1006) * width),
+//                    (int) (top + (262f / 632) * height));
+
+//            int bleft = (int) (left + 70f / 100f * width);
+//            int btop = (int) (0 + (88f / 632) * height);
+//            int bright = (int) (left + (95f / 100f) * height);
+//            int bbottom = (int) (0 + (47f / 100f) * height);
+
+            int bleft = (int) (top + 60f / 100f * height);
+            int btop = (int) (left + (0f / 100f) * width);
+            int bright = (int) (top + (90f / 100f) * height);
+            int bbottom = (int) (left + (60f / 100f) * width);
+
+            Log.i("infos","left:" + bleft + " top:" + btop + " right:" + bright + " bottom:" + bbottom);
+            locatorDrawable.setBounds(bleft,btop, bright,bbottom);
+
         } else if (maskType == MASK_TYPE_ID_CARD_BACK) {
-            locatorDrawable.setBounds(
-                    (int) (left + 51f / 1006 * width),
-                    (int) (top + (48f / 632) * height),
-                    (int) (left + (250f / 1006) * width),
-                    (int) (top + (262f / 632) * height));
+//            locatorDrawable.setBounds(
+//                    (int) (left + 51f / 1006 * width),
+//                    (int) (top + (48f / 632) * height),
+//                    (int) (left + (250f / 1006) * width),
+//                    (int) (top + (262f / 632) * height));
+//                    (int) (left + 601f / 1006 * width),
+//                    (int) (top + (110f / 632) * height),
+//                    (int) (left + (963f / 1006) * width),
+//                    (int) (top + (476f / 632) * height));
+
+            int bleft = (int) (top + 5f / 100f * height);
+            int btop = (int) (-(10f / 100f) * width - left);
+            int bright = (int) (top + (25f / 100f) * height);
+            int bbottom = (int) (  (20f / 100f) * width - left);
+
+            Log.i("infos","left:" + bleft + " top:" + btop + " right:" + bright + " bottom:" + bbottom);
+            locatorDrawable.setBounds(bleft,btop, bright,bbottom);
+
         }
         if (locatorDrawable != null) {
+            canvas.save();
+            canvas.rotate(90,locatorDrawable.getIntrinsicWidth()/2,locatorDrawable.getIntrinsicHeight()/2);
+//            canvas.rotate(90,frame.width()/2,frame.height()/2);
             locatorDrawable.draw(canvas);
         }
     }
