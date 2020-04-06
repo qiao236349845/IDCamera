@@ -322,10 +322,39 @@ public class CameraActivity extends AppCompatActivity {
     private View.OnClickListener confirmCancelButtonOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            reset();
             displayImageView.setImageBitmap(null);
             showTakePicture();
         }
     };
+
+    private void reset(){
+        if (contentType == null) {
+            contentType = CONTENT_TYPE_GENERAL;
+        }
+        int maskType;
+        switch (contentType) {
+            case CONTENT_TYPE_ID_CARD_FRONT:
+                maskType = MaskView.MASK_TYPE_ID_CARD_FRONT;
+                overlayView.setVisibility(View.INVISIBLE);
+                break;
+            case CONTENT_TYPE_ID_CARD_BACK:
+                maskType = MaskView.MASK_TYPE_ID_CARD_BACK;
+                overlayView.setVisibility(View.INVISIBLE);
+                break;
+            case CONTENT_TYPE_BANK_CARD:
+                maskType = MaskView.MASK_TYPE_BANK_CARD;
+                overlayView.setVisibility(View.INVISIBLE);
+                break;
+            case CONTENT_TYPE_GENERAL:
+            default:
+                maskType = MaskView.MASK_TYPE_NONE;
+                cropMaskView.setVisibility(View.INVISIBLE);
+                break;
+        }
+        cameraView.setMaskType(maskType);
+        cropMaskView.setMaskType(maskType);
+    }
 
     private View.OnClickListener rotateButtonOnClickListener = new View.OnClickListener() {
         @Override
@@ -387,6 +416,12 @@ public class CameraActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
+
+            if (cropMaskView.getMaskType() == MaskView.MASK_TYPE_ID_CARD_FRONT || cropMaskView.getMaskType() == MaskView.MASK_TYPE_ID_CARD_BACK) {
+                overlayView.setVisibility(View.VISIBLE);
+                cropMaskView.setVisibility(View.INVISIBLE);
+            }
+
             cropView.setFilePath(getRealPathFromURI(uri));
             showCrop();
         }

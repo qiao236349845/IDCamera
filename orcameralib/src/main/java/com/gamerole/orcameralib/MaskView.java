@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.View;
 
 
+import com.gamerole.orcameralib.util.DimensionUtil;
+
 import java.io.File;
 
 @SuppressWarnings("unused")
@@ -155,54 +157,32 @@ public class MaskView extends View {
         canvas.drawPath(path, pen);
         canvas.drawPath(path, eraser);
 
+        int bbl = 0;
+        int bbt = 0;
+        int bbr = 0;
+        int bbb = 0;
+        
         if (maskType == MASK_TYPE_ID_CARD_FRONT) {
-//            locatorDrawable.setBounds(
-//                    (int) (left + 601f / 1006 * width),
-//                    (int) (top + (110f / 632) * height),
-//                    (int) (left + (963f / 1006) * width),
-//                    (int) (top + (476f / 632) * height));
-//                    (int) (left + 51f / 1006 * width),
-//                    (int) (top + (48f / 632) * height),
-//                    (int) (left + (250f / 1006) * width),
-//                    (int) (top + (262f / 632) * height));
-
-//            int bleft = (int) (left + 70f / 100f * width);
-//            int btop = (int) (0 + (88f / 632) * height);
-//            int bright = (int) (left + (95f / 100f) * height);
-//            int bbottom = (int) (0 + (47f / 100f) * height);
-
-            int bleft = (int) (top + 60f / 100f * height);
-            int btop = (int) (left + (0f / 100f) * width);
-            int bright = (int) (top + (90f / 100f) * height);
-            int bbottom = (int) (left + (60f / 100f) * width);
-
-            Log.i("infos","left:" + bleft + " top:" + btop + " right:" + bright + " bottom:" + bbottom);
-            locatorDrawable.setBounds(bleft,btop, bright,bbottom);
+            bbl = (int)((left + right ) * 1.1 / 3);
+            bbt = (int)((top + bottom) * 5.7 / 10 ) ;
+            bbr = (int)((left + right ) * 2.1 / 3);
+            bbb = (int)((top + bottom) * 8.2 / 10 );
+            Log.i("infos","left : " + bbl + " top : " + bbt + " right :" + bbr + " bottom : " + bbb);
+            locatorDrawable.setBounds(bbl, bbt, bbr, bbb);
 
         } else if (maskType == MASK_TYPE_ID_CARD_BACK) {
-//            locatorDrawable.setBounds(
-//                    (int) (left + 51f / 1006 * width),
-//                    (int) (top + (48f / 632) * height),
-//                    (int) (left + (250f / 1006) * width),
-//                    (int) (top + (262f / 632) * height));
-//                    (int) (left + 601f / 1006 * width),
-//                    (int) (top + (110f / 632) * height),
-//                    (int) (left + (963f / 1006) * width),
-//                    (int) (top + (476f / 632) * height));
+            bbl = (int)(right - (left + right ) * 2.5 / 10);
+            bbt = (int)(top +  (top + bottom) * 0.3 / 10 ) ;
+            bbr = (int)(right - (left + right ) * 0.5 / 10);
+            bbb = (int)(top + (top + bottom) * 1.9 / 10 );
 
-            int bleft = (int) (top + 5f / 100f * height);
-            int btop = (int) (-(10f / 100f) * width - left);
-            int bright = (int) (top + (25f / 100f) * height);
-            int bbottom = (int) (  (20f / 100f) * width - left);
-
-            Log.i("infos","left:" + bleft + " top:" + btop + " right:" + bright + " bottom:" + bbottom);
-            locatorDrawable.setBounds(bleft,btop, bright,bbottom);
+            Log.i("infos","left : " + bbl + " top : " + bbt + " right :" + bbr + " bottom : " + bbb);
+            locatorDrawable.setBounds(bbl,bbt, bbr,bbb);
 
         }
         if (locatorDrawable != null) {
             canvas.save();
-            canvas.rotate(90,locatorDrawable.getIntrinsicWidth()/2,locatorDrawable.getIntrinsicHeight()/2);
-//            canvas.rotate(90,frame.width()/2,frame.height()/2);
+            canvas.rotate(90,(bbl + bbr)/2,(bbt + bbb)/2);
             locatorDrawable.draw(canvas);
         }
     }
