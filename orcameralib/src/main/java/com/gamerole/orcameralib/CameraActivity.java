@@ -140,6 +140,7 @@ public class CameraActivity extends AppCompatActivity {
             default:
                 maskType = MaskView.MASK_TYPE_NONE;
                 cropMaskView.setVisibility(View.INVISIBLE);
+                overlayView.setVisibility(View.INVISIBLE);
                 break;
         }
         cameraView.setMaskType(maskType);
