@@ -76,6 +76,7 @@ public class FrameOverlayView extends View {
     private GestureDetector gestureDetector;
     private RectF touchRect = new RectF();
     private RectF frameRect = new RectF();
+    private double modulus = 0.2;
 
     private OnFrameChangeListener onFrameChangeListener;
 
@@ -109,11 +110,16 @@ public class FrameOverlayView extends View {
             frameRect.left = (int) (w * 0.05);
             frameRect.top = (int) (h * 0.25);
         } else {
-            frameRect.left = (int) (w * 0.2);
-            frameRect.top = (int) (h * 0.2);
+            frameRect.left = (int) (w * modulus);
+            frameRect.top = (int) (h * modulus);
         }
         frameRect.right = w - frameRect.left;
         frameRect.bottom = h - frameRect.top;
+    }
+
+    public void setModulus(double modulus){
+        this.modulus = modulus;
+        postInvalidate();
     }
 
     private int shapeType = 0;
