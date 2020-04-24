@@ -17,9 +17,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.Surface;
 import android.view.View;
 import android.widget.ImageView;
@@ -39,6 +42,8 @@ public class CameraActivity extends AppCompatActivity {
     public static final String CONTENT_TYPE_ID_CARD_FRONT = "IDCardFront";
     public static final String CONTENT_TYPE_ID_CARD_BACK = "IDCardBack";
     public static final String CONTENT_TYPE_BANK_CARD = "bankCard";
+    public static final String CONTENT_TYPE_MANUAL_INTERCEPTION = "manual_interception";
+    public static final String CONTENT_TYPE_LARGE_CAR = "large_car";
 
     private static final int REQUEST_CODE_PICK_IMAGE = 100;
     private static final int PERMISSIONS_REQUEST_CAMERA = 800;
@@ -66,7 +71,7 @@ public class CameraActivity extends AppCompatActivity {
             return false;
         }
     };
-
+    private RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +100,8 @@ public class CameraActivity extends AppCompatActivity {
         cropContainer.findViewById(R.id.confirm_button).setOnClickListener(cropConfirmButtonListener);
         cropMaskView = (MaskView) cropContainer.findViewById(R.id.crop_mask_view);
         cropContainer.findViewById(R.id.cancel_button).setOnClickListener(cropCancelButtonListener);
+
+        recyclerView = findViewById(R.id.recycleview);
 
         setOrientation(getResources().getConfiguration());
         initParams();
@@ -135,6 +142,15 @@ public class CameraActivity extends AppCompatActivity {
             case CONTENT_TYPE_BANK_CARD:
                 maskType = MaskView.MASK_TYPE_BANK_CARD;
                 overlayView.setVisibility(View.INVISIBLE);
+                break;
+            case CONTENT_TYPE_MANUAL_INTERCEPTION:
+                maskType = MaskView.MASK_TYPE_NONE;
+                cropMaskView.setVisibility(View.INVISIBLE);
+                break;
+            case CONTENT_TYPE_LARGE_CAR:
+                maskType = MaskView.MASK_TYPE_LARGE_CAR;
+                cropMaskView.setVisibility(View.INVISIBLE);
+                setImageColum();
                 break;
             case CONTENT_TYPE_GENERAL:
             default:
@@ -237,7 +253,9 @@ public class CameraActivity extends AppCompatActivity {
                         overlayView.setVisibility(View.VISIBLE);
                         overlayView.setTypeWide();
                         showCrop();
-                    } else {
+                    } else if(cropMaskView.getMaskType() == MaskView.MASK_TYPE_LARGE_CAR){
+                        doConfirmResult(bitmap);
+                    }else {
                         displayImageView.setImageBitmap(bitmap);
                         showResultConfirm();
                     }
@@ -348,6 +366,10 @@ public class CameraActivity extends AppCompatActivity {
                 maskType = MaskView.MASK_TYPE_BANK_CARD;
                 overlayView.setVisibility(View.INVISIBLE);
                 break;
+            case CONTENT_TYPE_LARGE_CAR:
+                maskType = MaskView.MASK_TYPE_LARGE_CAR;
+                overlayView.setVisibility(View.INVISIBLE);
+                break;
             case CONTENT_TYPE_GENERAL:
             default:
                 maskType = MaskView.MASK_TYPE_NONE;
@@ -448,4 +470,49 @@ public class CameraActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    private ImageAdapter imageAdapter = null;
+    public void setImageColum(){
+        recyclerView.setVisibility(View.VISIBLE);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+//        manager.setStackFromEnd(true);
+        manager.setReverseLayout(true);
+        recyclerView.setLayoutManager(manager);
+        imageAdapter = new ImageAdapter(this);
+        recyclerView.setAdapter(imageAdapter);
+
+        imageAdapter.setListener(new ImageAdapter.OnViewClickListener() {
+            @Override
+            public void onViewClick(int id, int position) {
+
+            }
+        });
+
+    }
+
+    private void doConfirmResult(final Bitmap bitmap) {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                    fileOutputStream.close();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            reset();
+                            showTakePicture();
+                            imageAdapter.setFresh(outputFile);
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
 }

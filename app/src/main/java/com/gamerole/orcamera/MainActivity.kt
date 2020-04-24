@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.gamerole.orcameralib.CameraActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivityForResult
@@ -35,6 +35,20 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult<CameraActivity>(1002,
                     CameraActivity.KEY_OUTPUT_FILE_PATH to File(filesDir, "3.jpg").absolutePath,
                     CameraActivity.KEY_CONTENT_TYPE to CameraActivity.CONTENT_TYPE_ID_CARD_BACK)
+        }
+
+
+        tvInterceptor.setOnClickListener {
+            startActivityForResult<CameraActivity>(103,
+                    CameraActivity.KEY_OUTPUT_FILE_PATH to File(filesDir, "4.jpg").absolutePath,
+                    CameraActivity.KEY_CONTENT_TYPE to CameraActivity.CONTENT_TYPE_MANUAL_INTERCEPTION)
+        }
+
+
+        tvCar.setOnClickListener {
+            startActivityForResult<CameraActivity>(103,
+                    CameraActivity.KEY_OUTPUT_FILE_PATH to File(filesDir, "5.jpg").absolutePath,
+                    CameraActivity.KEY_CONTENT_TYPE to CameraActivity.CONTENT_TYPE_LARGE_CAR)
         }
 //                    } else {
 //                        toast("需要开启照相权限")

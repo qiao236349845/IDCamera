@@ -25,4 +25,13 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:id="@+id/recycleview"
+        android:layout_marginTop="20dp"
+        android:visibility="gone"
+        />
+
+
 </RelativeLayout>

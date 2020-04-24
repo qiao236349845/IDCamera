@@ -26,6 +26,19 @@
         android:text="身份证反面" />
 
 
+    <TextView
+        android:id="@+id/tvInterceptor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="默认截取" />
+
+    <TextView
+        android:id="@+id/tvCar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="拍车模式" />
+
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

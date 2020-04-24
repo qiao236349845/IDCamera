@@ -13,7 +13,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -130,6 +130,9 @@ public class CameraView extends FrameLayout {
                 break;
             case MaskView.MASK_TYPE_BANK_CARD:
                 hintResourceId = R.drawable.bd_ocr_hint_align_bank_card;
+                break;
+            case MaskView.MASK_TYPE_LARGE_CAR:
+                hintView.setVisibility(INVISIBLE);
                 break;
             case MaskView.MASK_TYPE_NONE:
             default:

@@ -13,15 +13,13 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.IntDef;
-import android.support.annotation.RequiresApi;
-import android.support.v4.content.res.ResourcesCompat;
+import androidx.annotation.IntDef;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-
-import com.gamerole.orcameralib.util.DimensionUtil;
 
 import java.io.File;
 
@@ -32,8 +30,9 @@ public class MaskView extends View {
     public static final int MASK_TYPE_ID_CARD_FRONT = 1;
     public static final int MASK_TYPE_ID_CARD_BACK = 2;
     public static final int MASK_TYPE_BANK_CARD = 11;
+    public static final int MASK_TYPE_LARGE_CAR = 12;
 
-    @IntDef({MASK_TYPE_NONE, MASK_TYPE_ID_CARD_FRONT, MASK_TYPE_ID_CARD_BACK, MASK_TYPE_BANK_CARD})
+    @IntDef({MASK_TYPE_NONE, MASK_TYPE_ID_CARD_FRONT, MASK_TYPE_ID_CARD_BACK, MASK_TYPE_BANK_CARD,MASK_TYPE_LARGE_CAR})
     @interface MaskType {
 
     }
@@ -54,6 +53,8 @@ public class MaskView extends View {
 
     private Paint eraser = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint pen = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private Paint textPain = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private Paint textPain2 = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private Rect frame = new Rect();
 
@@ -62,7 +63,9 @@ public class MaskView extends View {
     public Rect getFrameRect() {
         if (maskType == MASK_TYPE_NONE) {
             return new Rect(0, 0, getWidth(), getHeight());
-        } else {
+        } else if(maskType == MASK_TYPE_LARGE_CAR){
+            return new Rect(frame);
+        }else {
             return new Rect(frame);
         }
 
@@ -80,6 +83,8 @@ public class MaskView extends View {
                         R.drawable.bd_ocr_id_card_locator_back, null);
                 break;
             case MASK_TYPE_BANK_CARD:
+                break;
+            case MASK_TYPE_LARGE_CAR:
                 break;
             case MASK_TYPE_NONE:
             default:
@@ -112,6 +117,14 @@ public class MaskView extends View {
 
     private void init() {
         locatorDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.bd_ocr_id_card_locator_front, null);
+
+//        textPain.setColor(Color.WHITE);
+//        textPain.setAntiAlias(true);
+//        textPain.setTextSize(30);
+//        textPain.setAntiAlias(true);
+//        textPain.setTextAlign(Paint.Align.CENTER);
+//        textPain2.setAlpha(50);
+//        textPain2.setTextAlign(Paint.Align.CENTER);
     }
 
     @Override
@@ -185,6 +198,23 @@ public class MaskView extends View {
             canvas.rotate(90,(bbl + bbr)/2,(bbt + bbb)/2);
             locatorDrawable.draw(canvas);
         }
+
+//        String text = "主驾侧身(含轮胎)";
+//        Rect textRect = new Rect();
+//        textPain.getTextBounds(text,0,text.length(),textRect);
+//
+//        canvas.save();
+//        canvas.rotate(90,right + 50,(bottom + top) / 2 );
+//
+//
+//        int l = right + 50 - textRect.width() / 2 - 20;
+//        int t = (bottom + top) / 2 - textRect.height()  - 10;
+//        int r = right + 50 + textRect.width() / 2 + 20;
+//        int b = (bottom + top) / 2 + textRect.height() ;
+//
+//        Path p = fillRectRound2(l,t,r,b,10,10,false);
+//        canvas.drawPath(p, textPain2);
+//        canvas.drawText(text,right + 50,(bottom + top) / 2 ,textPain);
     }
 
     private Path path = new Path();
@@ -245,4 +275,50 @@ public class MaskView extends View {
     private void capture(File file) {
 
     }
+
+
+
+    private Path fillRectRound2(float left, float top, float right, float bottom, float rx, float ry, boolean
+            conformToOriginalPost) {
+
+        Path path = new Path();
+        path.reset();
+        if (rx < 0) {
+            rx = 0;
+        }
+        if (ry < 0) {
+            ry = 0;
+        }
+        float width = right - left;
+        float height = bottom - top;
+        if (rx > width / 2) {
+            rx = width / 2;
+        }
+        if (ry > height / 2) {
+            ry = height / 2;
+        }
+        float widthMinusCorners = (width - (2 * rx));
+        float heightMinusCorners = (height - (2 * ry));
+
+        path.moveTo(right, top + ry);
+        path.rQuadTo(0, -ry, -rx, -ry);
+        path.rLineTo(-widthMinusCorners, 0);
+        path.rQuadTo(-rx, 0, -rx, ry);
+        path.rLineTo(0, heightMinusCorners);
+
+        if (conformToOriginalPost) {
+            path.rLineTo(0, ry);
+            path.rLineTo(width, 0);
+            path.rLineTo(0, -ry);
+        } else {
+            path.rQuadTo(0, ry, rx, ry);
+            path.rLineTo(widthMinusCorners, 0);
+            path.rQuadTo(rx, 0, rx, -ry);
+        }
+
+        path.rLineTo(0, -heightMinusCorners);
+        path.close();
+        return path;
+    }
+
 }
