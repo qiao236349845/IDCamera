@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2017 Baidu, Inc. All Rights Reserved.
+  -->
+<com.gamerole.orcameralib.OCRCameraLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:contentView="@+id/camera_view"
+        app:leftDownView="@+id/complet"
+        app:centerView="@+id/ll_center"
+        app:rightUpView="@+id/back"
+    android:id="@+id/take_picture_container">
+
+    <com.gamerole.orcameralib.CameraView
+            android:id="@+id/camera_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/close_button"
+        android:layout_marginLeft="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="14dp"
+        android:layout_width="30dp"
+        android:src="@drawable/bd_ocr_close"
+        android:visibility="gone"
+        android:layout_height="30dp"/>
+
+    <ImageView
+        android:id="@+id/album_button"
+        android:layout_width="60dp"
+        android:layout_height="54dp"
+        android:padding="18dp"
+        android:layout_marginLeft="@dimen/camera_left_margin"
+        android:layout_marginStart="@dimen/camera_left_margin"
+        android:layout_marginBottom="@dimen/camera_bottom_margin"
+        android:visibility="gone"
+        android:src="@drawable/bd_ocr_gallery"/>
+
+    <TextView
+        android:layout_width="77dp"
+        android:layout_height="48dp"
+        android:textSize="12sp"
+        android:textColor="#666666"
+        android:text="完成"
+        android:rotation="90"
+        android:id="@+id/complet"
+        android:gravity="center"
+        android:background="#181818"
+        />
+
+    <TextView
+        android:layout_width="77dp"
+        android:layout_height="33dp"
+        android:textSize="12sp"
+        android:textColor="#ffffff"
+        android:text="返回"
+        android:rotation="90"
+        android:id="@+id/back"
+        android:gravity="center"
+        android:background="#181818"
+        />
+
+
+    <RelativeLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_center"
+        >
+
+        <ImageView
+            android:id="@+id/take_photo_button"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:clickable="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_icon_photo_button"/>
+
+        <ImageView
+            android:id="@+id/light_button"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:clickable="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="center"
+            android:background="@drawable/ic_icon_light"
+            />
+
+    </RelativeLayout>
+
+
+</com.gamerole.orcameralib.OCRCameraLayout>

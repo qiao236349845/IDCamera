@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.View;
 
 
+import com.gamerole.orcameralib.util.DimensionUtil;
+
 import java.io.File;
 
 @SuppressWarnings("unused")
@@ -59,6 +61,7 @@ public class MaskView extends View {
     private Rect frame = new Rect();
 
     private Drawable locatorDrawable;
+    private int detalHeight = 0;
 
     public Rect getFrameRect() {
         if (maskType == MASK_TYPE_NONE) {
@@ -85,6 +88,7 @@ public class MaskView extends View {
             case MASK_TYPE_BANK_CARD:
                 break;
             case MASK_TYPE_LARGE_CAR:
+                detalHeight = DimensionUtil.dpToPx(50);
                 break;
             case MASK_TYPE_NONE:
             default:
@@ -147,7 +151,7 @@ public class MaskView extends View {
             frame.left = left;
             frame.top = top;
             frame.right = right;
-            frame.bottom = bottom;
+            frame.bottom = bottom - detalHeight;
 
         }
     }
@@ -166,7 +170,7 @@ public class MaskView extends View {
         int bottom = frame.bottom;
 
         canvas.drawColor(maskColor);
-        fillRectRound(left, top, right, bottom, 30, 30, false);
+        fillRectRound(left, top, right, bottom, 10, 10, false);
         canvas.drawPath(path, pen);
         canvas.drawPath(path, eraser);
 

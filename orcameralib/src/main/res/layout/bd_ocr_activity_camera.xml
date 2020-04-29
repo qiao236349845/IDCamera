@@ -5,9 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/take_picture_container"
-        layout="@layout/bd_ocr_take_picture"
+    <ViewStub
+        android:id="@+id/viewstub_take_picture_container"
+        android:layout="@layout/bd_ocr_take_picture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ViewStub
+        android:id="@+id/viewstub_take_car_container"
+        android:layout="@layout/bd_ocr_take_car_picture"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

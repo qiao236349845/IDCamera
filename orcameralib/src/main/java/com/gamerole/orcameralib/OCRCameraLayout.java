@@ -30,6 +30,7 @@ public class OCRCameraLayout extends FrameLayout {
     private int centerViewId;
     private int leftDownViewId;
     private int rightUpViewId;
+    private boolean isFull;
 
     public void setOrientation(int orientation) {
         if (this.orientation == orientation) {
@@ -103,7 +104,13 @@ public class OCRCameraLayout extends FrameLayout {
         if (r < b) {
             int contentHeight = width * 4 / 3;
             int heightLeft = height - contentHeight;
-            contentView.layout(l, t, r, contentHeight);
+            if(isFull){
+                contentView.layout(l, t, r, height);
+            }else{
+                contentView.layout(l, t, r, contentHeight);
+            }
+
+
 
             backgroundRect.left = 0;
             backgroundRect.top = contentHeight;
@@ -161,5 +168,10 @@ public class OCRCameraLayout extends FrameLayout {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawRect(backgroundRect, paint);
+    }
+
+    public void setFullScreen(boolean full){
+        isFull = full;
+        requestLayout();
     }
 }

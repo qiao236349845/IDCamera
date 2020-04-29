@@ -1,11 +1,14 @@
 package com.gamerole.orcameralib;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,11 +30,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
     private List dataList;
     private int currentIndex = 0;
     private OnViewClickListener listener;
+    private int[] imageRes = {R.drawable.ic_icon_main_left,R.drawable.ic_icon_no_main_left,R.drawable.ic_icon_main_back};
+    private String[] strRes = {"主驾侧身","副驾侧身","正后方"};
 
     public ImageAdapter(Context context){
         dataList = new ArrayList();
         inflater = LayoutInflater.from(context);
-        for(int i = 0; i< 8;i++){
+        for(int i = 0; i< 7;i++){
             dataList.add("");
         }
     }
@@ -66,6 +71,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
             holder.parent.setBackgroundResource(R.color.transparent);
         }
 
+        if(position < 3){
+            holder.tv1.setVisibility(View.GONE);
+            holder.tv2.setVisibility(View.VISIBLE);
+            holder.tv2.setText(strRes[position]);
+            Drawable drawable = holder.tv1.getResources().getDrawable(imageRes[position]);
+            drawable.setBounds(0,0,drawable.getMinimumWidth(),drawable.getMinimumHeight());
+            holder.tv2.setCompoundDrawables(null,null,null,drawable);
+        }else {
+            holder.tv2.setVisibility(View.GONE);
+            holder.tv1.setVisibility(View.VISIBLE);
+        }
+        Log.i("infos",position + "  ");
     }
 
     @Override
@@ -103,16 +120,45 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
         void onViewClick(int id, int position);
     }
 
+    public ArrayList<String> getData(){
+        ArrayList<String> files = new ArrayList();
+        for(Object o : dataList){
+            if(o instanceof File){
+                files.add(((File) o).getAbsolutePath());
+            }
+        }
+        return files;
+    }
+
+    public boolean isReady(){
+        boolean b = false;
+        int count = 0;
+        for(int i = 0; i < 3;i++){
+            Object o = dataList.get(i);
+            if(o instanceof File){
+                count ++;
+            }
+        }
+        if(count == 3){
+            b = true;
+        }
+        return b;
+    }
+
 }
 
 class ImageViewHolder extends RecyclerView.ViewHolder{
 
     ImageView imageView;
     View parent;
+    TextView tv1;
+    TextView tv2;
     public ImageViewHolder(View itemView) {
         super(itemView);
         imageView = itemView.findViewById(R.id.image);
         parent = itemView.findViewById(R.id.parent);
+        tv1 = itemView.findViewById(R.id.tv1);
+        tv2 = itemView.findViewById(R.id.tv2);
     }
 
 }

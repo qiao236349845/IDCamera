@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
@@ -23,9 +24,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Surface;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -33,7 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 
-public class CameraActivity extends AppCompatActivity {
+public class CameraActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String KEY_OUTPUT_FILE_PATH = "outputFilePath";
     public static final String KEY_CONTENT_TYPE = "contentType";
@@ -72,14 +76,21 @@ public class CameraActivity extends AppCompatActivity {
         }
     };
     private RecyclerView recyclerView;
+    private ViewStub viewStub1;
+    private ViewStub viewStub2;
+    private TextView complet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bd_ocr_activity_camera);
 
-        takePictureContainer = (OCRCameraLayout) findViewById(R.id.take_picture_container);
-        confirmResultContainer = (OCRCameraLayout) findViewById(R.id.confirm_result_container);
 
+        viewStub1 = findViewById(R.id.viewstub_take_picture_container);
+        viewStub2 = findViewById(R.id.viewstub_take_car_container);
+        initData();
+        takePictureContainer = findViewById(R.id.take_picture_container);
+        confirmResultContainer = findViewById(R.id.confirm_result_container);
         cameraView = (CameraView) findViewById(R.id.camera_view);
         cameraView.getCameraControl().setPermissionCallback(permissionCallback);
         lightButton = (ImageView) findViewById(R.id.light_button);
@@ -119,7 +130,7 @@ public class CameraActivity extends AppCompatActivity {
         cameraView.stop();
     }
 
-    private void initParams() {
+    private void initData(){
         String outputPath = getIntent().getStringExtra(KEY_OUTPUT_FILE_PATH);
         if (outputPath != null) {
             outputFile = new File(outputPath);
@@ -129,6 +140,21 @@ public class CameraActivity extends AppCompatActivity {
         if (contentType == null) {
             contentType = CONTENT_TYPE_GENERAL;
         }
+
+        if(contentType.equals(CONTENT_TYPE_LARGE_CAR)){
+            viewStub2.inflate();
+            complet = findViewById(R.id.complet);
+            complet.setOnClickListener(this);
+            findViewById(R.id.back).setOnClickListener(this);
+        }else {
+            viewStub1.inflate();
+        }
+
+
+    }
+
+    private void initParams() {
+
         int maskType;
         switch (contentType) {
             case CONTENT_TYPE_ID_CARD_FRONT:
@@ -192,9 +218,9 @@ public class CameraActivity extends AppCompatActivity {
     private void updateFlashMode() {
         int flashMode = cameraView.getCameraControl().getFlashMode();
         if (flashMode == ICameraControl.FLASH_MODE_TORCH) {
-            lightButton.setImageResource(R.drawable.bd_ocr_light_on);
+            lightButton.setImageResource(R.drawable.ic_icon_light);
         } else {
-            lightButton.setImageResource(R.drawable.bd_ocr_light_off);
+            lightButton.setImageResource(R.drawable.ic_icon_light);
         }
     }
 
@@ -474,7 +500,7 @@ public class CameraActivity extends AppCompatActivity {
     private ImageAdapter imageAdapter = null;
     public void setImageColum(){
         recyclerView.setVisibility(View.VISIBLE);
-
+        takePictureContainer.setFullScreen(true);
         LinearLayoutManager manager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
 //        manager.setStackFromEnd(true);
         manager.setReverseLayout(true);
@@ -485,10 +511,10 @@ public class CameraActivity extends AppCompatActivity {
         imageAdapter.setListener(new ImageAdapter.OnViewClickListener() {
             @Override
             public void onViewClick(int id, int position) {
-
+                getPath();
             }
         });
-
+        getPath();
     }
 
     private void doConfirmResult(final Bitmap bitmap) {
@@ -505,7 +531,15 @@ public class CameraActivity extends AppCompatActivity {
                         public void run() {
                             reset();
                             showTakePicture();
+                            Log.i("infos","out " + outputFile.getAbsolutePath());
                             imageAdapter.setFresh(outputFile);
+                            getPath();
+                            boolean b = imageAdapter.isReady();
+                            if(b){
+                                complet.setTextColor(getResources().getColor(R.color.ffffff));
+                            }else {
+                                complet.setTextColor(getResources().getColor(R.color.f66666));
+                            }
                         }
                     });
                 } catch (IOException e) {
@@ -515,4 +549,25 @@ public class CameraActivity extends AppCompatActivity {
         }.start();
     }
 
+    private void getPath(){
+        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + System.currentTimeMillis() + ".jpg";
+        Log.i("infos","path " + path);
+        outputFile = new File(path);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.complet){
+            // 完成
+            boolean b = imageAdapter.isReady();
+            if(b){
+                Intent intent = new Intent();
+                intent.putStringArrayListExtra("data",imageAdapter.getData());
+                setResult(RESULT_OK,intent);
+                finish();
+            }
+        }else if(v.getId() == R.id.back){
+            finish();
+        }
+    }
 }
