@@ -32,13 +32,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
     private OnViewClickListener listener;
     private int[] imageRes = {R.drawable.ic_icon_main_left,R.drawable.ic_icon_no_main_left,R.drawable.ic_icon_main_back};
     private String[] strRes = {"主驾侧身","副驾侧身","正后方"};
+    private int picNum;
 
-    public ImageAdapter(Context context){
+    public ImageAdapter(Context context,int num){
         dataList = new ArrayList();
         inflater = LayoutInflater.from(context);
-        for(int i = 0; i< 7;i++){
+        for(int i = 0; i< num;i++){
             dataList.add("");
         }
+        picNum = num;
     }
 
     @NonNull
@@ -83,6 +85,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
             holder.tv1.setVisibility(View.VISIBLE);
         }
         Log.i("infos",position + "  ");
+
+
+        if(picNum == 1){
+            holder.tv2.setVisibility(View.GONE);
+            holder.tv1.setVisibility(View.VISIBLE);
+            holder.tv1.setText("拍照");
+        }
+
     }
 
     @Override
@@ -133,13 +143,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
     public boolean isReady(){
         boolean b = false;
         int count = 0;
-        for(int i = 0; i < 3;i++){
+        int num;
+        if(picNum < 3){
+            num = picNum;
+        }else {
+            num = 3;
+        }
+        for(int i = 0; i < num;i++){
             Object o = dataList.get(i);
             if(o instanceof File){
                 count ++;
             }
         }
-        if(count == 3){
+        if(count == num){
             b = true;
         }
         return b;

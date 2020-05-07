@@ -41,6 +41,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
     public static final String KEY_OUTPUT_FILE_PATH = "outputFilePath";
     public static final String KEY_CONTENT_TYPE = "contentType";
+    public static final String KEY_PIC_NUM = "key_pic_num";
 
     public static final String CONTENT_TYPE_GENERAL = "general";
     public static final String CONTENT_TYPE_ID_CARD_FRONT = "IDCardFront";
@@ -79,6 +80,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     private ViewStub viewStub1;
     private ViewStub viewStub2;
     private TextView complet;
+    private int picNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +148,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             complet = findViewById(R.id.complet);
             complet.setOnClickListener(this);
             findViewById(R.id.back).setOnClickListener(this);
+            picNum = getIntent().getIntExtra(KEY_PIC_NUM,6);
         }else {
             viewStub1.inflate();
         }
@@ -505,9 +508,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 //        manager.setStackFromEnd(true);
         manager.setReverseLayout(true);
         recyclerView.setLayoutManager(manager);
-        imageAdapter = new ImageAdapter(this);
+        imageAdapter = new ImageAdapter(this,picNum);
         recyclerView.setAdapter(imageAdapter);
-
+        recyclerView.scrollToPosition(0);
         imageAdapter.setListener(new ImageAdapter.OnViewClickListener() {
             @Override
             public void onViewClick(int id, int position) {

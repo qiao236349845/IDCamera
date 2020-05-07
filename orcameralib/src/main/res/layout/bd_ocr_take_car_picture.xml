@@ -83,10 +83,11 @@
             android:layout_width="43dp"
             android:layout_height="43dp"
             android:clickable="true"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:scaleType="center"
             android:background="@drawable/ic_icon_light"
+            android:layout_toRightOf="@id/take_photo_button"
+            android:layout_marginLeft="40dp"
             />
 
     </RelativeLayout>
