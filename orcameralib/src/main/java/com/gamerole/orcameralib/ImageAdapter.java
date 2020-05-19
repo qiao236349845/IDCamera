@@ -1,6 +1,7 @@
 package com.gamerole.orcameralib;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -55,9 +57,25 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
     public void onBindViewHolder(@NonNull ImageViewHolder holder, final int position) {
         Object o = dataList.get(position);
         if(o instanceof String && !TextUtils.isEmpty((String)o)){
+            setVisiable(holder,true);
             Glide.with(holder.imageView).load(o).into(holder.imageView);
         }else if(o instanceof File){
+            setVisiable(holder,true);
             Glide.with(holder.imageView).load(o).into(holder.imageView);
+        }else {
+            setVisiable(holder,false);
+            if(position < 3){
+                Drawable srcdrawable = ResourcesCompat.getDrawable(holder.imageViewBg.getResources(), imageRes[position], null);
+                Glide.with(holder.imageViewBg).load(srcdrawable).transform(new RotateTransformation(90f)).into(holder.imageViewBg);
+                holder.tv1.setVisibility(View.GONE);
+                holder.tv2.setVisibility(View.VISIBLE);
+                holder.tv2.setText(strRes[position]);
+            }else {
+                holder.imageViewBg.setImageResource(R.color.color_8B8F91);
+                holder.tv2.setVisibility(View.GONE);
+                holder.tv1.setVisibility(View.VISIBLE);
+                holder.tv1.setText("其他");
+            }
         }
 
         holder.parent.setOnClickListener(new View.OnClickListener() {
@@ -73,26 +91,28 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
             holder.parent.setBackgroundResource(R.color.transparent);
         }
 
-        if(position < 3){
-            holder.tv1.setVisibility(View.GONE);
-            holder.tv2.setVisibility(View.VISIBLE);
-            holder.tv2.setText(strRes[position]);
-            Drawable drawable = holder.tv1.getResources().getDrawable(imageRes[position]);
-            drawable.setBounds(0,0,drawable.getMinimumWidth(),drawable.getMinimumHeight());
-            holder.tv2.setCompoundDrawables(null,null,null,drawable);
-        }else {
-            holder.tv2.setVisibility(View.GONE);
-            holder.tv1.setVisibility(View.VISIBLE);
-        }
-        Log.i("infos",position + "  ");
-
-
         if(picNum == 1){
             holder.tv2.setVisibility(View.GONE);
             holder.tv1.setVisibility(View.VISIBLE);
             holder.tv1.setText("拍照");
         }
 
+    }
+
+    private void setVisiable(ImageViewHolder holder,boolean visiable){
+        int visiable1;
+        int visiable2;
+        if(visiable){
+            visiable1 = View.VISIBLE;
+            visiable2 = View.GONE;
+        }else {
+            visiable1 = View.GONE;
+            visiable2 = View.VISIBLE;
+        }
+        holder.imageView.setVisibility(visiable1);
+        holder.imageViewBg.setVisibility(visiable2);
+        holder.tv2.setVisibility(View.GONE);
+        holder.tv1.setVisibility(View.GONE);
     }
 
     @Override
@@ -105,10 +125,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
         notifyDataSetChanged();
     }
     public void setFresh(Object o){
+        Log.i("infos","setFresh -- currentIndex " + currentIndex);
         dataList.set(currentIndex,o);
         if(currentIndex < dataList.size() - 1){
             currentIndex ++;
         }
+
+        Log.i("infos","setFresh -3- currentIndex " + currentIndex);
         notifyDataSetChanged();
     }
 
@@ -169,12 +192,14 @@ class ImageViewHolder extends RecyclerView.ViewHolder{
     View parent;
     TextView tv1;
     TextView tv2;
+    ImageView imageViewBg;
     public ImageViewHolder(View itemView) {
         super(itemView);
         imageView = itemView.findViewById(R.id.image);
         parent = itemView.findViewById(R.id.parent);
         tv1 = itemView.findViewById(R.id.tv1);
         tv2 = itemView.findViewById(R.id.tv2);
+        imageViewBg = itemView.findViewById(R.id.image_bg);
     }
 
 }

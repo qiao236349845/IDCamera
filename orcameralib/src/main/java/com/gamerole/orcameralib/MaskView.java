@@ -62,6 +62,7 @@ public class MaskView extends View {
 
     private Drawable locatorDrawable;
     private int detalHeight = 0;
+    private int offset = 0;
 
     public Rect getFrameRect() {
         if (maskType == MASK_TYPE_NONE) {
@@ -89,6 +90,7 @@ public class MaskView extends View {
                 break;
             case MASK_TYPE_LARGE_CAR:
                 detalHeight = DimensionUtil.dpToPx(50);
+                offset = DimensionUtil.dpToPx(30);
                 break;
             case MASK_TYPE_NONE:
             default:
@@ -149,7 +151,7 @@ public class MaskView extends View {
             int bottom = height + top;
 
             frame.left = left;
-            frame.top = top;
+            frame.top = top + offset;
             frame.right = right;
             frame.bottom = bottom - detalHeight;
 
