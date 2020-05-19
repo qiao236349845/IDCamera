@@ -64,7 +64,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
             Glide.with(holder.imageView).load(o).into(holder.imageView);
         }else {
             setVisiable(holder,false);
-            if(position < 3){
+            if(position < 3 && picNum != 1){
                 Drawable srcdrawable = ResourcesCompat.getDrawable(holder.imageViewBg.getResources(), imageRes[position], null);
                 Glide.with(holder.imageViewBg).load(srcdrawable).transform(new RotateTransformation(90f)).into(holder.imageViewBg);
                 holder.tv1.setVisibility(View.GONE);
@@ -74,7 +74,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
                 holder.imageViewBg.setImageResource(R.color.color_8B8F91);
                 holder.tv2.setVisibility(View.GONE);
                 holder.tv1.setVisibility(View.VISIBLE);
-                holder.tv1.setText("其他");
+                if(picNum == 1){
+                    holder.tv1.setText("拍照");
+                }else {
+                    holder.tv1.setText("其他");
+                }
             }
         }
 
@@ -90,13 +94,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
         }else {
             holder.parent.setBackgroundResource(R.color.transparent);
         }
-
-        if(picNum == 1){
-            holder.tv2.setVisibility(View.GONE);
-            holder.tv1.setVisibility(View.VISIBLE);
-            holder.tv1.setText("拍照");
-        }
-
     }
 
     private void setVisiable(ImageViewHolder holder,boolean visiable){
