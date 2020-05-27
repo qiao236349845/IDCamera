@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.gamerole.orcameralib.util.DimensionUtil;
 
 
 public class OCRCameraLayout extends FrameLayout {
@@ -31,6 +32,7 @@ public class OCRCameraLayout extends FrameLayout {
     private int leftDownViewId;
     private int rightUpViewId;
     private boolean isFull;
+    private int offset = DimensionUtil.dpToPx(15);
 
     public void setOrientation(int orientation) {
         if (this.orientation == orientation) {
@@ -122,7 +124,7 @@ public class OCRCameraLayout extends FrameLayout {
                 left = (width - centerView.getMeasuredWidth()) / 2;
                 top = contentHeight + (heightLeft - centerView.getMeasuredHeight()) / 2;
                 if(top < height * 0.86){
-                    top = (int)(height * 0.93 - centerView.getMeasuredHeight() / 2);
+                    top = (int)(height * 0.93 - centerView.getMeasuredHeight() / 2) - offset;
                 }
 
                 centerView
@@ -133,7 +135,7 @@ public class OCRCameraLayout extends FrameLayout {
             left = leftDownViewLayoutParams.leftMargin;
             top = contentHeight + (heightLeft - leftDownView.getMeasuredHeight()) / 2;
             if(top < height * 0.86){
-                top = (int)(height * 0.93 - leftDownView.getMeasuredHeight() / 2);
+                top = (int)(height * 0.93 - leftDownView.getMeasuredHeight() / 2) - offset;
             }
             leftDownView
                     .layout(left, top, left + leftDownView.getMeasuredWidth(), top + leftDownView.getMeasuredHeight());
@@ -141,7 +143,7 @@ public class OCRCameraLayout extends FrameLayout {
             left = width - rightUpView.getMeasuredWidth() - rightUpViewLayoutParams.rightMargin;
             top = contentHeight + (heightLeft - rightUpView.getMeasuredHeight()) / 2;
             if(top < height * 0.86){
-                top = (int)(height * 0.93 - rightUpView.getMeasuredHeight() / 2);
+                top = (int)(height * 0.93 - rightUpView.getMeasuredHeight() / 2) - offset;
             }
             rightUpView.layout(left, top, left + rightUpView.getMeasuredWidth(), top + rightUpView.getMeasuredHeight());
         } else {
