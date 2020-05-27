@@ -259,10 +259,24 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }
     };
 
+
+    Runnable runnable  = new Runnable() {
+        @Override
+        public void run() {
+            cameraView.takePicture(outputFile, takePictureCallback);
+            isReady = false;
+        }
+    };
+    private boolean isReady = true;
     private View.OnClickListener takeButtonOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            cameraView.takePicture(outputFile, takePictureCallback);
+            if(isReady){
+                handler.post(runnable);
+            }else {
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable,500);
+            }
         }
     };
 
@@ -543,6 +557,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                             }else {
                                 complet.setTextColor(getResources().getColor(R.color.f66666));
                             }
+                            isReady = true;
                         }
                     });
                 } catch (IOException e) {

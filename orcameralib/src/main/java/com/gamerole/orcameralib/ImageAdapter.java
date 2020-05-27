@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.gamerole.orcameralib.util.DimensionUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,6 +37,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
     private int[] imageRes = {R.drawable.ic_icon_main_left,R.drawable.ic_icon_no_main_left,R.drawable.ic_icon_main_back};
     private String[] strRes = {"主驾侧身","副驾侧身","正后方"};
     private int picNum;
+    private int offset_22 = DimensionUtil.dpToPx(22);
+    private int offset_28 = DimensionUtil.dpToPx(28);
 
     public ImageAdapter(Context context,int num){
         dataList = new ArrayList();
@@ -70,6 +74,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
                 holder.tv1.setVisibility(View.GONE);
                 holder.tv2.setVisibility(View.VISIBLE);
                 holder.tv2.setText(strRes[position]);
+                int left;
+                if(strRes[position].length() == 3){
+                    left = offset_28;
+                }else {
+                    left = offset_22;
+                }
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.tv2.getLayoutParams();
+                params.leftMargin = left;
+                holder.tv2.setLayoutParams(params);
             }else {
                 holder.imageViewBg.setImageResource(R.color.color_8B8F91);
                 holder.tv2.setVisibility(View.GONE);
