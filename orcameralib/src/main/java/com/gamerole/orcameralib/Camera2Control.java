@@ -467,8 +467,13 @@ public class Camera2Control implements ICameraControl {
 
                 Size size = getOptimalSize(map.getOutputSizes(ImageFormat.JPEG), textureView.getWidth(),
                         textureView.getHeight(), maxImageSize, maxImageSize, new Size(4, 3));
-
-                imageReader = ImageReader.newInstance(size.getWidth(), size.getHeight(),
+                int w = size.getWidth();
+                int h = size.getHeight();
+                if(w > 2560){
+                    w = 2560;
+                    h = 1440;
+                }
+                imageReader = ImageReader.newInstance(w, h,
                         ImageFormat.JPEG, 1);
                 imageReader.setOnImageAvailableListener(
                         onImageAvailableListener, backgroundHandler);
