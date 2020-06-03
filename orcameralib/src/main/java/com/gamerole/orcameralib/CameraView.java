@@ -254,18 +254,18 @@ public class CameraView extends FrameLayout {
 
             // 90度或者270度旋转
             if (rotation % 180 == 90) {
-                int x = decoder.getWidth() / 2;
-                int y = decoder.getHeight() / 2;
-
-                int rotatedWidth = region.height();
-                int rotated = region.width();
-
-                // 计算，裁剪框旋转后的坐标
-                region.left = x - rotatedWidth / 2;
-                region.top = y - rotated / 2;
-                region.right = x + rotatedWidth / 2;
-                region.bottom = y + rotated / 2;
-                region.sort();
+//                int x = decoder.getWidth() / 2;
+//                int y = decoder.getHeight() / 2;
+//
+//                int rotatedWidth = region.height();
+//                int rotated = region.width();
+//
+//                // 计算，裁剪框旋转后的坐标
+//                region.left = x - rotatedWidth / 2;
+//                region.top = y - rotated / 2;
+//                region.right = x + rotatedWidth / 2;
+//                region.bottom = y + rotated / 2;
+//                region.sort();
             }
 
             BitmapFactory.Options options = new BitmapFactory.Options();
